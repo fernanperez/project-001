@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public float speed = 5f; // Speed of the player movement
+    public float rotationSpeed = 5f; // Speed of the player rotation
 
     private Rigidbody rb;
     
@@ -23,5 +24,13 @@ public class PlayerController : MonoBehaviour
 
         // Apply the movement to the player's Rigidbody
         rb.AddForce(movement * speed);
+
+        // Rotate the player based on the input
+        if (movement != Vector3.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(movement);
+
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        }
     }
 }

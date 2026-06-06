@@ -1,2 +1,8 @@
 .plastic
 .vscode
+Library
+Library/*
+Temp
+Logs
+ProjectSettings
+UserSettings
