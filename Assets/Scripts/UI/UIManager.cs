@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using System.Collections;
 
 public class UIManager : MonoBehaviour
 {
@@ -22,5 +23,16 @@ public class UIManager : MonoBehaviour
         }
 
         scoreText.text = "Score: " + score; // Update the score text in the UI
+
+        StartCoroutine(AnimateScore()); // Start the score animation coroutine
+    }
+
+    public IEnumerator AnimateScore()
+    {
+        scoreText.transform.localScale = Vector3.one * 1.5f; // Enlarge the score text
+
+        yield return new WaitForSeconds(0.20f); // Wait for a short duration
+
+        scoreText.transform.localScale = Vector3.one; // Reset the score text scale
     }
 }

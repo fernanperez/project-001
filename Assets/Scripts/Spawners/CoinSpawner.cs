@@ -37,10 +37,7 @@ public class CoinSpawner : MonoBehaviour
     {
         activeCoins--; // Decrease the count of active coins when one is collected
 
-        if (activeCoins < maxCoins)
-        {
-            SpawnSingleCoin(); // Spawn a new coin if the number of active coins is less than the maximum
-        }
+        StartCoroutine(SpawnCoinWithDelay()); // Start a coroutine to spawn a new coin after a delay
     }
 
     private void SpawnSingleCoin()
@@ -49,7 +46,9 @@ public class CoinSpawner : MonoBehaviour
         if (point == null)
             return; // If there are no free spawn points, exit the method
 
-        GameObject coin = Instantiate(coinPrefab, point.transform.position, coinPrefab.transform.rotation); // Spawn a coin at the free spawn point
+        GameObject coin = Instantiate(coinPrefab, point.transform.position + Vector3.up * 0.5f, coinPrefab.transform.rotation); // Spawn the coin slightly above the spawn point to prevent it from intersecting with the ground
+
+        Physics.SyncTransforms(); // Ensure that the physics engine is updated with the new coin's position
 
         Coin coinScript = coin.GetComponent<Coin>(); // Get the Coin script from the spawned coin
 
@@ -68,7 +67,12 @@ public class CoinSpawner : MonoBehaviour
         {
             if (!point.isOccupied)
             {
-                freePoints.Add(point); // Add unoccupied spawn points to the list
+                float distance = Vector3.Distance(point.transform.position, GameObject.FindWithTag("Player").transform.position); // Calculate the distance from the spawn point to the player
+
+                if (distance > 3.0f) // Only consider spawn points that are at least 3 unit away from the player
+                {
+                    freePoints.Add(point); // Add unoccupied spawn points to the list
+                }
             }
         }
 
@@ -78,5 +82,15 @@ public class CoinSpawner : MonoBehaviour
         int randomIndex = Random.Range(0, freePoints.Count); // Get a random index for the free spawn points
 
         return freePoints[randomIndex]; // Return a random unoccupied spawn point
+    }
+
+    private System.Collections.IEnumerator SpawnCoinWithDelay()
+    {
+        yield return new WaitForFixedUpdate(); // Wait for the next fixed update to ensure that the coin has been fully processed before spawning a new one
+
+        if (activeCoins < maxCoins)
+        {
+            SpawnSingleCoin(); // Spawn a new coin if the number of active coins is less than the maximum
+        }
     }
 }
