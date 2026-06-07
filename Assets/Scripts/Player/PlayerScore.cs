@@ -9,5 +9,8 @@ public class PlayerScore : MonoBehaviour
     {
         score ++;
         Debug.Log("Puntaje: " + score);
+
+        // Update the score display in the UI
+        UIManager.Instance.UpdateScore(score);
     }
 }
