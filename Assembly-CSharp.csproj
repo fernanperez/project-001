@@ -51,11 +51,13 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Game\GameManager.cs" />
     <Compile Include="Assets\Scripts\PlayerController.cs" />
+    <Compile Include="Assets\Scripts\Spawners\CoinSpawner.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerScore.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\Scripts\Coin.cs" />
     <Compile Include="Assets\Scripts\CameraFollow.cs" />
     <Compile Include="Assets\Scripts\UI\UIManager.cs" />
+    <Compile Include="Assets\Scripts\Spawners\SpawnPoint.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
