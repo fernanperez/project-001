@@ -1,6 +1,7 @@
 using UnityEngine;
+using Unity.Netcode;
 
-public class CoinSpawner : MonoBehaviour
+public class CoinSpawner : NetworkBehaviour
 {
 
     public GameObject coinPrefab; // Prefab of the coin to spawn
@@ -21,7 +22,9 @@ public class CoinSpawner : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
     {
-        SpawnCoins();
+        Debug.Log("CoinSpawner Start - IsServer: " + IsServer);
+
+        if (!IsServer) {return;} // Only the server should handle spawning coins
     }
 
     // Method to spawn coins at random spawn points
@@ -63,11 +66,19 @@ public class CoinSpawner : MonoBehaviour
     {
         var freePoints = new System.Collections.Generic.List<SpawnPoint>(); // List to hold unoccupied spawn points
 
+        GameObject player = GameObject.FindWithTag("Player"); // Find the player object in the scene to calculate distance from spawn points
+
         foreach (var point in spawnPointScripts)
         {
             if (!point.isOccupied)
             {
-                float distance = Vector3.Distance(point.transform.position, GameObject.FindWithTag("Player").transform.position); // Calculate the distance from the spawn point to the player
+                if (player == null)
+                {
+                    freePoints.Add(point);
+                    continue;
+                }
+
+                float distance = Vector3.Distance(point.transform.position, player.transform.position); // Calculate the distance from the spawn point to the player
 
                 if (distance > 3.0f) // Only consider spawn points that are at least 3 unit away from the player
                 {
@@ -92,5 +103,10 @@ public class CoinSpawner : MonoBehaviour
         {
             SpawnSingleCoin(); // Spawn a new coin if the number of active coins is less than the maximum
         }
+    }
+
+    public void SpawnCoinsServer()
+    {
+        SpawnCoins(); // Method to be called by the server to spawn coins at the start of the game
     }
 }
