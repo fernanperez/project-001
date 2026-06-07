@@ -8,11 +8,12 @@ public class GameManager : MonoBehaviour
 
     public float matchTime = 60f; // Duration of the match in seconds
 
-    public TMP_Text timerText; // Reference to the TextMeshPro text component for displaying the timer
-
     private bool gameEnded; // Flag to check if the game has ended
 
     public GameObject gameOverPanel; // Reference to the Game Over panel in the UI
+
+    public int score; // Player's score
+
 
     private void Awake()
     {
@@ -27,9 +28,7 @@ public class GameManager : MonoBehaviour
         matchTime -= Time.deltaTime; // Decrease the match time by the time elapsed since the last frame
 
         // Update the timer text in the UI
-        timerText.text =
-            "Time: " +
-            Mathf.Ceil(matchTime);
+        UIManager.Instance.UpdateTimer(matchTime);
 
         if (matchTime <= 0f)
         {
@@ -42,7 +41,7 @@ public class GameManager : MonoBehaviour
     {
         gameEnded = true;
 
-        gameOverPanel.SetActive(true); // Show the Game Over panel
+        UIManager.Instance.ShowGameOver(); // Show the Game Over panel in the UI
     }
 
     public void RestartGame()
@@ -52,5 +51,15 @@ public class GameManager : MonoBehaviour
             .GetActiveScene()
             .buildIndex
         );
+    }
+
+    public void AddScore(int value)
+    {
+        if (gameEnded)
+            return;
+
+        score += value;
+
+        UIManager.Instance.UpdateScore(score); // Update the score in the UI
     }
 }

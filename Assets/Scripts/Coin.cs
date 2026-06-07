@@ -32,34 +32,32 @@ public class Coin : MonoBehaviour
         if (collected)
             return; // If the coin has already been collected, exit the method
 
-        PlayerScore score = other.GetComponent<PlayerScore>();
 
-        if (score != null)
+        if (!other.CompareTag("Player")) return; // Check if the collider belongs to the player, if not, exit the method
+
+        collected = true; // Mark the coin as collected to prevent multiple collections
+
+        Collider coinCollider = GetComponent<Collider>(); // Get the Collider component of the coin
+
+        if (coinCollider != null)
         {
-            collected = true; // Mark the coin as collected to prevent multiple collections
-
-            Collider coinCollider = GetComponent<Collider>(); // Get the Collider component of the coin
-
-            if (coinCollider != null)
-            {
-                coinCollider.enabled = false; // Disable the collider to prevent further collisions
-            }
-
-            score.AddPoint(); // Increase the player's score
-
-            if (spawnPoint != null)
-            {
-                spawnPoint.isOccupied = false; // Mark the spawn point as free
-            }
-
-            CoinSpawner.Instance.CoinCollected(); // Notify the CoinSpawner that a coin has been collected
-
-            AudioManager.Instance.PlayCoinSound(); // Play the coin pickup sound effect
-
-            Instantiate(pickupEffect, transform.position, Quaternion.identity); // Spawn the pickup effect at the coin's position
-
-            Destroy(gameObject); // Destroy the coin after collecting
+            coinCollider.enabled = false; // Disable the collider to prevent further collisions
         }
+
+        GameManager.Instance.AddScore(1); // Add 1 point to the player's score
+
+        if (spawnPoint != null)
+        {
+            spawnPoint.isOccupied = false; // Mark the spawn point as free
+        }
+
+        CoinSpawner.Instance.CoinCollected(); // Notify the CoinSpawner that a coin has been collected
+
+        AudioManager.Instance.PlayCoinSound(); // Play the coin pickup sound effect
+
+        Instantiate(pickupEffect, transform.position, Quaternion.identity); // Spawn the pickup effect at the coin's position
+
+        Destroy(gameObject); // Destroy the coin after collecting
     }
 
     private IEnumerator EnableColliderNextFrame()

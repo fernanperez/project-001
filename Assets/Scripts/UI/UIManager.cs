@@ -6,7 +6,10 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager Instance; // Singleton instance of the UIManager
 
+    [Header("UI Elements")]
     public TMP_Text scoreText; // Reference to the TextMeshPro text component for displaying the score
+    public TMP_Text timerText; // Reference to the TextMeshPro text component for displaying the timer
+    public GameObject gameOverPanel; // Reference to the Game Over panel in the UI
 
 
     private void Awake()
@@ -25,6 +28,16 @@ public class UIManager : MonoBehaviour
         scoreText.text = "Score: " + score; // Update the score text in the UI
 
         StartCoroutine(AnimateScore()); // Start the score animation coroutine
+    }
+
+     public void UpdateTimer(float time)
+    {
+        timerText.text = "Time: " + Mathf.Ceil(time);
+    }
+
+    public void ShowGameOver()
+    {
+        gameOverPanel.SetActive(true);
     }
 
     public IEnumerator AnimateScore()
